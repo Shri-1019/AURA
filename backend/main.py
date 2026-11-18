@@ -20,3 +20,14 @@ def home():
         "status": "Running",
         "application": "AURA AI Companion"
     }
+
+
+# Chat endpoint - receives messages and sends replies
+@app.post("/api/chat")
+def chat(request: ChatRequest):
+    user_message = request.message
+
+    return {
+        "user_message": user_message,
+        "aura_reply": "Hello! I'm AURA. How can I help you today?"
+    }
