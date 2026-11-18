@@ -1,7 +1,35 @@
 
+import { useState } from 'react'
 import './App.css'
 
 function App() {
+  const [message, setMessage] = useState('')
+  const [reply, setReply] = useState('')
+
+  // Function to send a message to the backend
+  const sendMessage = async () => {
+  if (!message.trim()) return
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: message,
+      }),
+    })
+
+    const data = await response.json()
+
+    setReply(data.aura_reply)
+
+  } catch (error) {
+    console.error('Error communicating with AURA:', error)
+  }
+}
+
   return (
     <div className="app-container">
 
@@ -75,6 +103,13 @@ function App() {
             </div>
           </div>
         </section>
+                {/* AURA Response */}
+                {reply && (
+                  <div className="aura-response">
+                    <strong>AURA</strong>
+                    <p>{reply}</p>
+                  </div>
+                )}
 
         {/* Message Input */}
         <div className="input-area">
@@ -82,8 +117,15 @@ function App() {
             <input
               type="text"
               placeholder="Message AURA..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
             />
-            <button className="send-button">↑</button>
+            <button
+              className="send-button"
+              onClick={sendMessage}
+            >
+              ↑
+            </button>
           </div>
 
           <p className="input-footer">
